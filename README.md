@@ -1,12 +1,18 @@
 # Private NPM Registry for Development
 
-Setup your own private NPM registry on your local machine.
+Setup your own private NPM registry on your local machine 🤓
 
-### Nexus 3 Repository Manager
+### Introduction
+
+There's nothing fancy here. Why would you set this up?
+
+- Create own offline cache of official npmjs.org registry
+- You are working on a Node.js module and want to test across code bases without publishing your module and without the additional complexity of git submodules.
+- You work for a large corporation and have no access to internal infrastructure when working remotely 🙋.
+
+## Setup Nexus 3
 
 The [Nexus repository manager](https://hub.docker.com/r/sonatype/nexus3/) is available for free. So we'll use that.
-
-## Setup
 
 ### 1) Start Nexus in Docker
 
@@ -39,7 +45,7 @@ In the screenshot, I named my repository `npm-local` so my npm registry URL is `
 
 To keep my `package.json` clean, I set the registry using the `NPM_CONFIG_REGISTRY` environment variable.
 
-To publish, you will need to authenticate as well, which is why I use a `local_publish.sh` file:
+To publish, you will need to authenticate as well, which is why I use a [`local_publish.sh`](./local_publish.sh) file:
 
 ```bash
 NPM_CONFIG_REGISTRY=http://localhost:8081/repository/npm-local/ \
@@ -62,7 +68,7 @@ $ echo -n 'admin:<PASSWORD>' | openssl base64
 
 ## Installing a Private Module
 
-Your module probably has dependencies, which means to use the local registry, you also need access to those packages. So you need to:
+Your module probably has dependencies, which means to use the local registry, you also need access to those packages. So you need to add and configure two more registries:
 
 1. Add a new _proxy_ registry named `npm-official` to proxy the official npm registry at https://registry.npmjs.org.
 
@@ -87,13 +93,6 @@ $ NPM_CONFIG_REGISTRY=http://localhost:8081/repository/npm-all/ npm install
 If you have a previously generated `package-lock.json` file, npm may complain. And it will change all the URLs if you install from this directory.
 
 As I use this just for testing private modules, I install my packages and then reset my lock file in git, whatever works 🤷‍♀️.
-
-## Use Cases
-
-There's nothing fancy here. Why would you set this up?
-
-- You are working on a Node.js module and want to test across code bases without publishing your module and without the additional complexity of git submodules.
-- You work for a large corporation and have no access to internal infrastructure when working remotely (🙋).
 
 ## References
 
