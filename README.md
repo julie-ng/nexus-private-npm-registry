@@ -26,10 +26,19 @@ Then open [http://localhost:8081](http://localhost:8081) and Nexus is running.
 
 ### 2) Login
 
-There's no customization of the image so the default credentials apply:
+The default username is `admin`. By default, the password can be found on the file `/nexus-data/admin.password` inside the volume. So to fetch it, run
 
-- username: `admin`
-- password: can be found on the file `/nexus-data/admin.password` inside the volume.
+```bash
+docker exec -it $(docker-compose ps -q nexus) bash
+```
+
+and then inside the container run
+
+```bash
+cat /nexus-data/admin.password
+```
+
+which will output your password to the commandline, but possibly squished up into the next input, e.g. `3f53a036-37c1-45e0-95c5-cd2d1c7eec95bash-4.4$` where `3f53a036-37c1-45e0-95c5-cd2d1c7eec95` is the password.
 
 You can change them once you login if you want.
 
@@ -51,15 +60,11 @@ To publish, you will need to authenticate as well, which is why I use a [`local_
 NPM_CONFIG_REGISTRY=http://localhost:8081/repository/npm-local/ \
 NPM_CONFIG_EMAIL=you@example.com \
 NPM_CONFIG_ALWAYS_AUTH=true \
-NPM_CONFIG__AUTH=YWRtaW46YWRtaW4xMjM= \
+NPM_CONFIG__AUTH=YOUR_AUTH_TOKEN_HERE \
 	npm publish
 ```
 
-The authentication token is for the default `admin` user with the `admin123` password. Because this is just for local development, there is no need to change it.
-
-#### Changed Password?
-
-If you changed the admin password, you will need to generate the proper auth token like so:
+To generate ana auth token based on your username and password, run:
 
 ```bash
 $ echo -n 'admin:<PASSWORD>' | openssl base64
