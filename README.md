@@ -29,7 +29,7 @@ Then open [http://localhost:8081](http://localhost:8081) and Nexus is running.
 There's no customization of the image so the default credentials apply:
 
 - username: `admin`
-- password: `admin123`
+- password: can be found on the file `/nexus-data/admin.password` inside the volume.
 
 You can change them once you login if you want.
 
